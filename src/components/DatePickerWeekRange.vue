@@ -85,14 +85,15 @@ export default {
       return cell.dayjs.format(format) === Today;
     };
 
+
     //修改一下起始和结束周的月份，用周日所在的月份作为起始、结束月份展示
     const handleChange = () => {
       // console.log("change!!!!")
       let startCol = startCell.column;
       let startDay = startDayjs.$D;
+      let endCol,endDay;
 
-      let endCol = endCell.column;
-      let endDay = endDayjs.$D;
+      
 
       let newStartDayjs = value1.value[0];
       let newEndDayjs = value1.value[1];
@@ -101,12 +102,26 @@ export default {
         // console.log("需要更改月份")
         newStartDayjs = dayjs(value1.value[0] - startCol * 24 * 3600 * 1000);
       }
+
+      if(endCell!==null&&endDayjs!==null){
+         endCol= endCell.column;
+        endDay = endDayjs.$D;
+        
+        if (endCol !== 0 && endCol >= endDay) {
+        newEndDayjs = dayjs(value1.value[1] - endCol * 24 * 3600 * 1000);
+      }
+
+      }
+
+
       if (endCol !== 0 && endCol >= endDay) {
         newEndDayjs = dayjs(value1.value[1] - endCol * 24 * 3600 * 1000);
       }
 
       value1.value = [new Date(newStartDayjs), new Date(newEndDayjs)];
     };
+
+    
 
     //获取周数，用来判断是否是同一周
     const getWeek = (date) => {
@@ -141,7 +156,11 @@ export default {
 
     //判断是否是起始日期？
     const isStarted = (cell) => {
-      if (
+      if(clicked&&isSameWeek(cell.dayjs, startDayjs) &&
+        cell.column === 0){
+          return true;
+        }
+      else if (
         isSameWeek(cell.dayjs, startDayjs) &&
         cell.column === 0 &&
         startDayjs < endDayjs
@@ -196,6 +215,8 @@ export default {
         startDayjs = el.dayjs;
         startCell = el;
         endDayjs = null;
+        endCell = null;
+        // changeStartDay()
       }
       if (clicked) {
         endDayjs = el.dayjs;
@@ -203,6 +224,11 @@ export default {
       }
       clicked = !clicked;
     };
+
+    const calendarChange = ()=>{
+      
+      
+    }
 
     return {
       value1,
@@ -215,6 +241,7 @@ export default {
       isEnded,
       isStarted,
       isInRange,
+      calendarChange
     };
   },
 };
