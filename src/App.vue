@@ -1,15 +1,15 @@
 <template>
   <div>
-    <date-picker-week-range :separator="separator" :startPlaceholder="'Choose Start Week'"></date-picker-week-range>
+    <week-range :separator="separator" :startPlaceholder="'Choose Start Week'"></week-range>
   </div>
 </template>
  
 <script>
-import DatePickerWeekRange from './components/DatePickerWeekRange.vue'
+// import DatePickerWeekRange from './components/weekrange/DatePickerWeekRange.vue'
 
 export default {
   components:{
-    DatePickerWeekRange
+    // DatePickerWeekRange
   },
  setup(){
   const separator="To"
