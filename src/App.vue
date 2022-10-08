@@ -1,6 +1,6 @@
 <template>
   <div>
-    <week-range :separator="separator" :startPlaceholder="'Choose Start Week'"></week-range>
+    <week-range  :separator="separator" :startPlaceholder="'Choose Start Week'"></week-range>
   </div>
 </template>
  
@@ -20,5 +20,6 @@ export default {
 }
 </script>
  
-<style scoped>
+<style >
+
 </style>

@@ -3,7 +3,7 @@
     <el-date-picker
       v-model="value1"
       type="daterange"
-      :format=format
+      format="YYYY年-ww周(MM月)"
       :range-separator=separator
       :start-placeholder=startPlaceholder
       :end-placeholder=endPlaceholder
@@ -48,9 +48,6 @@ export default {
     endPlaceholder:{
       type:String
     },
-    format:{
-      type:String
-    }
   },
   setup(props) {
     let value1 = ref("");
@@ -68,9 +65,7 @@ export default {
     const separator=props.separator||"To"
     const startPlaceholder=props.startPlaceholder||"start week"
     const endPlaceholder=props.endPlaceholder||"end week"
-    const format=props.format||"YYYY年-ww周(MM月)"
-    console.log("my format:",format)
-    // console.log("start place:",startPlaceholder)
+    console.log("start place:",startPlaceholder)
     // console.log("my separator:",separator)
 
     watch(
@@ -91,7 +86,7 @@ export default {
     };
 
 
-    //修改一下起始和结束周的月份，用周日所在的月份作为起始日、结束月份用周日的展示
+    //修改一下起始和结束周的月份，用周日所在的月份作为起始、结束月份展示
     const handleChange = () => {
       // console.log("change!!!!")
       let startCol = startCell.column;
@@ -103,32 +98,27 @@ export default {
       let newStartDayjs = value1.value[0];
       let newEndDayjs = value1.value[1];
 
-      if (startCol !== 0) {
+      if (startCol !== 0 && startCol >= startDay) {
         // console.log("需要更改月份")
         newStartDayjs = dayjs(value1.value[0] - startCol * 24 * 3600 * 1000);
       }
 
       if(endCell!==null&&endDayjs!==null){
-        endCol= endCell.column;
+         endCol= endCell.column;
         endDay = endDayjs.$D;
-        console.log("endCol:",endCol)
-        console.log("endDay:",endDay)
-
         
-        if (endCol !== 6 ) {
-          let transDays=6-endCol
-          console.log("transDays:",transDays)
-          let endTimeStamp=value1.value[1].getTime()
-          console.log("end time stamp:",endTimeStamp)
-          newEndDayjs = dayjs(endTimeStamp +transDays * 24 * 3600 * 1000);
-          console.log("new end day:",newEndDayjs)
-        }
-        // console.log("end day:",value1.value[1],"new end day:",newEndDayjs)
+        if (endCol !== 0 && endCol >= endDay) {
+        newEndDayjs = dayjs(value1.value[1] - endCol * 24 * 3600 * 1000);
+      }
 
       }
 
+
+      if (endCol !== 0 && endCol >= endDay) {
+        newEndDayjs = dayjs(value1.value[1] - endCol * 24 * 3600 * 1000);
+      }
+
       value1.value = [new Date(newStartDayjs), new Date(newEndDayjs)];
-      console.log("change 后立刻打印的value1:",value1)
     };
 
     
@@ -236,7 +226,7 @@ export default {
     };
 
     const calendarChange = ()=>{
-      console.log(" after clendar change value1:",value1)
+      
       
     }
 
@@ -245,7 +235,6 @@ export default {
       separator,
       startPlaceholder,
       endPlaceholder,
-      format,
       handleChange,
       isToday,
       cellClick,
