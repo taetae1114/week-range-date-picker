@@ -1,25 +1,45 @@
 <template>
   <div>
-    <week-range  :separator="separator" :startPlaceholder="'Choose Start Week'"></week-range>
+    <week-range v-model="value" @getValue="getValue"   :separator="separator" :startPlaceHolder="'Choose Start Week'">
+      
+    </week-range>
+
+    
   </div>
 </template>
  
 <script>
-// import DatePickerWeekRange from './components/weekrange/DatePickerWeekRange.vue'
+
+import { ref } from "vue";
 
 export default {
-  components:{
-    // DatePickerWeekRange
-  },
+  
  setup(){
+  const value=ref('')
   const separator="To"
+
+  // console.log(value)
+
+  const getValue = (datevalue) => {
+    // console.log("value:",datevalue)
+    const value=datevalue
+    // console.log(value.value[0])
+    // console.log(value.value[1])
+
+  }
+
   return{
-    separator
+    separator,
+    value,
+    getValue
   }
  }
 }
 </script>
  
 <style >
-
+/* .el-date-table tr:hover {
+  background: #0e489f;
+} */
+/* #f2f6fc */
 </style>
