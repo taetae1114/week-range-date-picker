@@ -7,7 +7,7 @@
       :range-separator="separator"
       :start-placeholder="startPlaceHolder"
       :end-placeholder="endPlaceHolder"
-      unlink-panels
+      :unlink-panels="unlinkPanels"
       @change="handleChange"
       @calendar-change="calendarChange"
       :shortcuts="shortcuts"
@@ -40,18 +40,24 @@ import dayjs from "dayjs";
 
 export default {
   props: {
-    separator: {
+    rangeSeparator: {
       type: String,
     },
-    startPlaceHolder: {
+    startPlaceholder: {
       type: String,
     },
-    endPlaceHolder: {
+    endPlaceholder: {
       type: String,
     },
     format: {
       type: String,
     },
+    modelValue:{
+      type:Array,
+    },
+    unlinkPanels:{
+      type:Boolean
+    }
   },
   setup(props, ctx) {
     let value = ref("");
@@ -67,10 +73,13 @@ export default {
     //用来辨识点击的是起始日期还是结束日期
     let clicked = false;
     // console.log("props:", props);
-    const separator = props.separator || "To";
-    const startPlaceHolder = props.startPlaceHolder || "start week";
-    const endPlaceHolder = props.endPlaceHolder || "end week";
+    const separator = props.rangeSeparator || "To";
+    console.log("props.rangeSeparator:",props.rangeSeparator)
+    const startPlaceHolder = props.startPlaceholder || "start week";
+    const endPlaceHolder = props.endPlaceholder || "end week";
     const format = props.format || "YYYY [Week] ww";
+    const unlinkPanels = props.unlinkPanels || false
+    value.value = props.modelValue.value
 
     watch(
       value.value,
@@ -110,7 +119,7 @@ export default {
 
         if (endCol !== 6) {
           let transDays = 6 - endCol;
-          let endTimeStamp = value.value[1].getTime();
+          let endTimeStamp = new Date(value.value[1]).getTime();
           newEndDayjs = dayjs(endTimeStamp + transDays * 24 * 3600 * 1000);
           // console.log("new end day:",newEndDayjs)
         }
@@ -118,7 +127,7 @@ export default {
 
       value.value = [new Date(newStartDayjs), new Date(newEndDayjs)];
 
-      ctx.emit("getValue", value);
+      ctx.emit("update:modelValue", value.value);
     };
 
     // 获取周数，用来判断是否是同一周
@@ -259,7 +268,7 @@ export default {
           value.value = [start, end];
           startDayjs = dayjs(start);
           endDayjs = dayjs(end);
-
+          ctx.emit("update:modelValue", value.value);
           // return [start, end];
         },
       },
@@ -292,6 +301,8 @@ export default {
           value.value = [start, end];
           startDayjs = dayjs(start);
           endDayjs = dayjs(end);
+          ctx.emit("update:modelValue", value.value);
+
         },
       },
       {
@@ -323,6 +334,8 @@ export default {
           value.value = [start, end];
           startDayjs = dayjs(start);
           endDayjs = dayjs(end);
+          ctx.emit("update:modelValue", value.value);
+
         },
       },
     ];
@@ -333,6 +346,7 @@ export default {
       startPlaceHolder,
       endPlaceHolder,
       format,
+      unlinkPanels,
       shortcuts,
       handleChange,
       isToday,

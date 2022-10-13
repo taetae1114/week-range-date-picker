@@ -1,45 +1,46 @@
 <template>
   <div>
-    <week-range v-model="value" @getValue="getValue"   :separator="separator" :startPlaceHolder="'Choose Start Week'">
-      
+    <week-range
+      v-model="value"
+      unlink-panels
+      format="YYYY [Week] ww"
+      range-separator="--"
+      start-placeholder="Choose Start Week"
+      end-placeholder="Choose End Week"
+    >
     </week-range>
-
-    
+    <!-- {{value}} -->
+    {{ value.toString() }}
   </div>
 </template>
  
 <script>
-
 import { ref } from "vue";
 
 export default {
-  
- setup(){
-  const value=ref('')
-  const separator="To"
+  // value-format="yyyy-MM-dd HH:mm:ss"
+  // format="yyyy-MM-dd HH:mm:ss"
 
-  // console.log(value)
+  setup() {
+    const value = ref("");
+    const separator = "-";
+    const format = "YYYY-ww";
 
-  const getValue = (datevalue) => {
-    // console.log("value:",datevalue)
-    const value=datevalue
-    // console.log(value.value[0])
-    // console.log(value.value[1])
-
-  }
-
-  return{
-    separator,
-    value,
-    getValue
-  }
- }
-}
+    const click = () => {
+      console.log("app value£º", value.value);
+      console.log("value stirng format:", value.value);
+    };
+    return {
+      separator,
+      value,
+      format,
+      click,
+      
+    };
+  },
+};
 </script>
  
 <style >
-/* .el-date-table tr:hover {
-  background: #0e489f;
-} */
-/* #f2f6fc */
+
 </style>
