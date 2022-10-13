@@ -4,12 +4,12 @@
       v-model="value"
       unlink-panels
       format="YYYY [Week] ww"
-      range-separator="--"
+      range-separator="-"
       start-placeholder="Choose Start Week"
       end-placeholder="Choose End Week"
+      :shortcuts="shortcuts"
     >
     </week-range>
-    <!-- {{value}} -->
     {{ value.toString() }}
   </div>
 </template>
@@ -30,17 +30,47 @@ export default {
       console.log("app value£º", value.value);
       console.log("value stirng format:", value.value);
     };
+
+    const shortcuts = [
+      {
+        text: "Last week",
+        value: () => {
+          const end = new Date();
+          const start = new Date();
+
+          return [start, end];
+        },
+      },
+      {
+        text: "Last 3 weeks",
+        value: () => {
+          const end = new Date();
+          const start = new Date();
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7 * 2);
+          return [start, end];
+        },
+      },
+      {
+        text: "Last 6 weeks",
+        value: () => {
+          const end = new Date();
+          const start = new Date();
+          start.setTime(start.getTime() - 3600 * 1000 * 24 * 7 * 5);
+          return [start, end];
+        },
+      },
+    ];
+
     return {
       separator,
       value,
       format,
+      shortcuts,
       click,
-      
     };
   },
 };
 </script>
  
 <style >
-
 </style>

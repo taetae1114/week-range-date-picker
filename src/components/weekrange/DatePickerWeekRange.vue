@@ -52,12 +52,15 @@ export default {
     format: {
       type: String,
     },
-    modelValue:{
-      type:Array,
+    modelValue: {
+      type: Array,
     },
-    unlinkPanels:{
-      type:Boolean
-    }
+    unlinkPanels: {
+      type: Boolean,
+    },
+    shortcuts: {
+      type: Array,
+    },
   },
   setup(props, ctx) {
     let value = ref("");
@@ -73,13 +76,157 @@ export default {
     //用来辨识点击的是起始日期还是结束日期
     let clicked = false;
     // console.log("props:", props);
+
+    const defaultShortcuts = [
+      {
+        text: "Last week",
+        value: () => {
+          startDayjs = null;
+          endDayjs = null;
+
+          const end = new Date();
+          const start = new Date();
+          let startday = start.getDay();
+
+          let endDay = end.getDay();
+          start.setTime(
+            start.getTime() -
+              startday * 3600 * 1000 * 24 -
+              start.getHours() * 3600 * 1000 -
+              start.getMinutes() * 60 * 1000 -
+              start.getSeconds() * 1000
+          );
+          end.setTime(
+            end.getTime() +
+              (6 - endDay) * 3600 * 1000 * 24 * 1 -
+              end.getHours() * 3600 * 1000 -
+              end.getMinutes() * 60 * 1000 -
+              end.getSeconds() * 1000
+          );
+          value.value = [start, end];
+          startDayjs = dayjs(start);
+          endDayjs = dayjs(end);
+          ctx.emit("update:modelValue", value.value);
+          // return [start, end];
+        },
+      },
+      {
+        text: "Last 3 weeks",
+        value: () => {
+          startDayjs = null;
+          endDayjs = null;
+
+          const end = new Date();
+          const start = new Date();
+          let startday = start.getDay();
+
+          let endDay = end.getDay();
+          start.setTime(
+            start.getTime() -
+              startday * 3600 * 1000 * 24 -
+              2 * 7 * 3600 * 1000 * 24 -
+              start.getHours() * 3600 * 1000 -
+              start.getMinutes() * 60 * 1000 -
+              start.getSeconds() * 1000
+          );
+          end.setTime(
+            end.getTime() +
+              (6 - endDay) * 3600 * 1000 * 24 * 1 -
+              end.getHours() * 3600 * 1000 -
+              end.getMinutes() * 60 * 1000 -
+              end.getSeconds() * 1000
+          );
+          value.value = [start, end];
+          startDayjs = dayjs(start);
+          endDayjs = dayjs(end);
+          ctx.emit("update:modelValue", value.value);
+        },
+      },
+      {
+        text: "Last 6 weeks",
+        value: () => {
+          startDayjs = null;
+          endDayjs = null;
+
+          const end = new Date();
+          const start = new Date();
+          let startday = start.getDay();
+
+          let endDay = end.getDay();
+          start.setTime(
+            start.getTime() -
+              startday * 3600 * 1000 * 24 -
+              5 * 7 * 3600 * 1000 * 24 -
+              start.getHours() * 3600 * 1000 -
+              start.getMinutes() * 60 * 1000 -
+              start.getSeconds() * 1000
+          );
+          end.setTime(
+            end.getTime() +
+              (6 - endDay) * 3600 * 1000 * 24 * 1 -
+              end.getHours() * 3600 * 1000 -
+              end.getMinutes() * 60 * 1000 -
+              end.getSeconds() * 1000
+          );
+          value.value = [start, end];
+          startDayjs = dayjs(start);
+          endDayjs = dayjs(end);
+          ctx.emit("update:modelValue", value.value);
+        },
+      },
+    ];
+
     const separator = props.rangeSeparator || "To";
-    console.log("props.rangeSeparator:",props.rangeSeparator)
+    // console.log("props.rangeSeparator:",props.rangeSeparator)
     const startPlaceHolder = props.startPlaceholder || "start week";
     const endPlaceHolder = props.endPlaceholder || "end week";
     const format = props.format || "YYYY [Week] ww";
-    const unlinkPanels = props.unlinkPanels || false
-    value.value = props.modelValue.value
+    const unlinkPanels = props.unlinkPanels || false;
+    value.value = props.modelValue.value;
+    let shortcuts = [];
+
+    
+    // console.log(props.shortcuts===shortcuts)
+    if (props.shortcuts) {
+      let len = props.shortcuts.length;
+      const newShortcuts = [];
+      for (let i = 0; i < len; i++) {
+        let newText = props.shortcuts[i].text;
+        let shortcutsValue = props.shortcuts[i].value();
+        // console.log(newText, shortcutsValue);
+        const end = new Date(shortcutsValue[1]);
+        const start = new Date(shortcutsValue[0]);
+
+        newShortcuts.push({
+          text: newText,
+          value: () => {
+            let startDay = start.getDay();
+            let endDay = end.getDay();
+
+            start.setTime(
+              start.getTime() -
+                startDay * 3600 * 24 * 1000 -
+                start.getHours() * 3600 * 1000 -
+                start.getMinutes() * 60 * 1000 -
+                start.getSeconds() * 1000
+            );
+            end.setTime(
+              end.getTime() +
+                (6 - endDay * 3600 * 24 * 1000) -
+                end.getHours() * 3600 * 1000 -
+                end.getMinutes() * 60 * 1000 -
+                end.getSeconds() * 1000
+            );
+
+            value.value = [start, end];
+            startDayjs = dayjs(start);
+            endDayjs = dayjs(end);
+            ctx.emit("update:modelValue", value.value);
+          },
+        });
+      }
+      shortcuts = newShortcuts;
+    } 
 
     watch(
       value.value,
@@ -238,107 +385,6 @@ export default {
     const calendarChange = () => {
       // console.log(" clendar change value:")
     };
-
-    const shortcuts = [
-      {
-        text: "Last week",
-        value: () => {
-          startDayjs = null;
-          endDayjs = null;
-
-          const end = new Date();
-          const start = new Date();
-          let startday = start.getDay();
-
-          let endDay = end.getDay();
-          start.setTime(
-            start.getTime() -
-              startday * 3600 * 1000 * 24 -
-              start.getHours() * 3600 * 1000 -
-              start.getMinutes() * 60 * 1000 -
-              start.getSeconds() * 1000
-          );
-          end.setTime(
-            end.getTime() +
-              (6 - endDay) * 3600 * 1000 * 24 * 1 -
-              end.getHours() * 3600 * 1000 -
-              end.getMinutes() * 60 * 1000 -
-              end.getSeconds() * 1000
-          );
-          value.value = [start, end];
-          startDayjs = dayjs(start);
-          endDayjs = dayjs(end);
-          ctx.emit("update:modelValue", value.value);
-          // return [start, end];
-        },
-      },
-      {
-        text: "Last 3 weeks",
-        value: () => {
-          startDayjs = null;
-          endDayjs = null;
-
-          const end = new Date();
-          const start = new Date();
-          let startday = start.getDay();
-
-          let endDay = end.getDay();
-          start.setTime(
-            start.getTime() -
-              startday * 3600 * 1000 * 24 -
-              2 * 7 * 3600 * 1000 * 24 -
-              start.getHours() * 3600 * 1000 -
-              start.getMinutes() * 60 * 1000 -
-              start.getSeconds() * 1000
-          );
-          end.setTime(
-            end.getTime() +
-              (6 - endDay) * 3600 * 1000 * 24 * 1 -
-              end.getHours() * 3600 * 1000 -
-              end.getMinutes() * 60 * 1000 -
-              end.getSeconds() * 1000
-          );
-          value.value = [start, end];
-          startDayjs = dayjs(start);
-          endDayjs = dayjs(end);
-          ctx.emit("update:modelValue", value.value);
-
-        },
-      },
-      {
-        text: "Last 6 weeks",
-        value: () => {
-          startDayjs = null;
-          endDayjs = null;
-
-          const end = new Date();
-          const start = new Date();
-          let startday = start.getDay();
-
-          let endDay = end.getDay();
-          start.setTime(
-            start.getTime() -
-              startday * 3600 * 1000 * 24 -
-              5 * 7 * 3600 * 1000 * 24 -
-              start.getHours() * 3600 * 1000 -
-              start.getMinutes() * 60 * 1000 -
-              start.getSeconds() * 1000
-          );
-          end.setTime(
-            end.getTime() +
-              (6 - endDay) * 3600 * 1000 * 24 * 1 -
-              end.getHours() * 3600 * 1000 -
-              end.getMinutes() * 60 * 1000 -
-              end.getSeconds() * 1000
-          );
-          value.value = [start, end];
-          startDayjs = dayjs(start);
-          endDayjs = dayjs(end);
-          ctx.emit("update:modelValue", value.value);
-
-        },
-      },
-    ];
 
     return {
       value,

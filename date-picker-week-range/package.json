@@ -1,0 +1,12 @@
+{
+  "name": "date-picker-week-range",
+  "version": "1.2.0",
+  "description": "基于element-plus的周范围日期选择器 week-range",
+  "main": "date-picker-week-range.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["WEEKRANGE","weekrange","Week-Range","week-range","date-picker-week-range","element-week-range","element-plus-week-range"],
+  "author": "phylosa",
+  "license": "ISC"
+}
