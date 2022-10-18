@@ -1,7 +1,9 @@
 # week-range-demo
+A date picker (week-range)  based on Elements-Plus
+
 基于element-plus的周范围日期选择器 week-range
 
-
+在线预览：[week-range-demo](https://taetae1114.github.io/week-range-demo/)
 
 ## NPM安装使用：
 
@@ -18,7 +20,7 @@ https://element-plus.gitee.io/zh-CN/component/date-picker.html#%E9%80%89%E6%8B%A
 ### :sparkles:如何使用:sparkles:：
 
 ```
-npm install date-picker-week-range@1.2.0(最新可用版本)
+npm i date-picker-week-range
 ```
 
 #### :point_left:全局注册
